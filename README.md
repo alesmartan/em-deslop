@@ -1,78 +1,118 @@
 # Em Deslop
 
-The em dash (U+2014) is the most obvious tell of AI writing. Em Deslop is a Chrome extension that takes it out of every page you read. `word\u2014word` becomes `word, word` by default. Code blocks, form fields and anything you can type into are left alone.
+![Before and after: the same paragraph with its em dashes replaced by commas](docs/images/before-after.png)
 
-Manifest V3, plain JavaScript, no build step. Works in any current Chromium browser: Chrome, Arc, Dia, Helium, Brave, Edge, Opera, Vivaldi.
+The em dash is the most obvious tell of AI writing. Em Deslop is a browser extension that replaces it on every page you read, before the page paints. Code blocks, form fields and anything you type into are left alone.
+
+It works in Chrome and every current Chromium browser: Arc, Dia, Helium, Brave, Edge, Opera, Vivaldi. Manifest V3, plain JavaScript, no build step, no network requests, no tracking.
 
 ## Install
 
-1. Open the browser's extensions page: `chrome://extensions` (or `arc://`, `brave://`, `edge://`, `opera://`, `vivaldi://`).
-2. Turn on **Developer mode**. Leave it on: since Chrome 134, turning it off disables unpacked extensions.
-3. Click **Load unpacked** and pick the `extension/` folder in this repo (not the repo root).
-4. Pin the icon so the popup is one click away.
+Em Deslop isn't on the Chrome Web Store yet. Installing from source takes a minute:
 
-To update after pulling changes, click the reload icon on the extension's card, then refresh open pages.
+1. Clone the repo, or download it as a ZIP and unzip it:
+   ```sh
+   git clone https://github.com/alesmartan/em-deslop.git
+   ```
+2. Open your browser's extensions page: `chrome://extensions` (Brave: `brave://extensions`, Edge: `edge://extensions`, Opera: `opera://extensions`, Vivaldi: `vivaldi://extensions`).
+3. Turn on **Developer mode** and leave it on. Chrome disables unpacked extensions when it's switched off.
+4. Click **Load unpacked** and pick the **`extension`** folder inside the repo.
+5. Pin the icon so the popup is one click away.
 
-Browser-specific settings, all on the extension's details page or card:
+To update: `git pull`, then click the reload icon on the extension's card.
 
-| Browser | Setting |
+## What it does
+
+Every em dash in the page's text is replaced, using the surrounding characters to pick something that reads well:
+
+| Where the dash is | What you get |
 |---|---|
-| All | "Allow in Incognito" (Brave: "Allow in Private") if you want it in private windows |
-| All | "Allow access to file URLs" for local files, including `test/fixture.html` |
-| Opera | "Allow access to search page results", or it won't run on Google and Bing results |
-| Arc | No toolbar: pin the extension to see it in the URL bar, or press Command-E |
-| Edge | Shows a permanent "developer mode extensions" notice. Ignore it. |
+| Between two words | A comma: `speed, it's about trust` |
+| Between two numbers | A hyphen: `1990-2000` |
+| Start of a line, like a quote attribution | Dropped: `Author Name` |
+| End of a line | Dropped |
+| Right before punctuation | Dropped: `wait?`, `(see below)` |
+| After sentence punctuation | A space: `end. Next` |
 
-The install dialog says the extension can "read and change all your data on all websites". It has to, to rewrite every page. It makes no network requests and only stores its own settings.
+Runs of dashes count as one, and spaces around the dash (including non-breaking and thin spaces) are absorbed. The extension also catches text that loads later: infinite scroll, single-page app navigation, live updates, iframes, and web components with open or closed shadow roots.
 
-On the Mac mini, `~/Code` is on the external SSD. If the SSD isn't mounted when the browser starts, the extension fails to load until you mount it and click reload.
+## The popup
 
-## Popup
+<img src="docs/images/popup.png" alt="Em Deslop popup with switches for everywhere and the current site, and a choice of replacement" width="320" align="right">
 
-- **Everywhere**: global on/off.
-- **On example.com**: turn it off for one site. Covers subdomains and that site's iframes.
-- **Replace with**: comma (`late, too late`), hyphen (`late - too late`), en dash (`late – too late`) or nothing (`late too late`). Digit ranges always become `1990-2000` (en dash style: `1990–2000`).
+- **Everywhere** turns it on or off globally.
+- **On example.com** turns it off for one site, including its subdomains and the iframes it embeds.
+- **Replace with** picks the style: comma (default), hyphen, en dash, or nothing.
 
-Turning it on applies live. Turning it off or changing the style reloads the current tab. Other open tabs keep their rewritten text until you reload them.
+Turning it on applies straight away. Turning it off or changing the style reloads the current tab, because rewritten text can't be put back in place. Other tabs pick up the change when you reload them.
 
-Settings live in `chrome.storage.sync`, so they follow your browser account where the browser supports sync.
+Settings are saved with `chrome.storage.sync`, so they follow your browser account if your browser syncs.
 
-## What it skips
+<br clear="right">
 
-`pre`, `code`, `kbd`, `samp`, `var`, `script`, `style`, `textarea`, `input`, `select`, `contenteditable` editors, `role="textbox"`, CodeMirror, Monaco and Ace editors, and anything inside `[data-emdash-keep]`.
+## What it leaves alone
 
-It can't reach text drawn on canvas (Google Docs body, Figma), PDFs in the built-in viewer, or browser pages (`chrome://`, web stores, the New Tab page). Copying text from a page copies the rewritten version.
+- Code: `pre`, `code`, `kbd`, `samp`, `var`
+- Anything you type into: `input`, `textarea`, `select`, `contenteditable` editors (Gmail, Notion, docs editors), `role="textbox"`
+- Code editors built from plain elements: CodeMirror, Monaco, Ace
+- `script`, `style`, `noscript`, `template`
+- Anything inside an element with a `data-emdash-keep` attribute, if you want to opt out on your own pages
+
+It can't reach text drawn on a canvas (the Google Docs page body, Figma), PDFs in the browser's viewer, or pages browsers don't let extensions touch (`chrome://` pages, extension stores, the New Tab page).
+
+Copying text from a page copies the rewritten version.
+
+## Browser notes
+
+| Browser | What to know |
+|---|---|
+| Chrome, Brave, Edge, Helium, Vivaldi | Works as installed. Edge shows a permanent "developer mode extensions" notice. It's harmless. |
+| Opera | Blocks extensions on Google and Bing results by default. Tick **Allow access to search page results** on the extension's card. |
+| Arc | No toolbar. Pin the extension to see it in the URL bar, or press Command-E. |
+| Dia | Works like Chrome. Extension support is newer there, so report anything odd. |
+| Any | Private windows: turn on **Allow in Incognito** (Brave: **Allow in Private**) on the extension's details page. |
+
+The full comparison, with sources, is in [docs/chromium-browsers.md](docs/chromium-browsers.md).
+
+## Privacy and permissions
+
+Em Deslop makes no network requests and collects nothing. It asks for:
+
+- **Content script on all sites**, to rewrite text wherever you read. This is why the install dialog says it can "read and change all your data on all websites". The code that does it is in [`extension/lib/`](extension/lib).
+- **`storage`**, for your three settings.
+- **`activeTab`**, so the popup can show which site you're on when you click the icon.
 
 ## How it works
 
-The content script runs at `document_start` in every frame. It walks text nodes with a `TreeWalker`, rewrites `Text.data` in place (no new elements, so React and friends don't notice), and watches for new text with a `MutationObserver`, batched to one pass per animation frame. It also walks open and closed shadow roots. Details in [docs/research.md](docs/research.md).
+A content script runs at `document_start` in every frame. It walks text nodes with a `TreeWalker`, skips whole subtrees that are code or editable, and rewrites `Text.data` in place, so the page's own framework never sees a structural change. A `MutationObserver` batches later changes into one pass per animation frame, which runs before paint. Open shadow roots are walked directly, closed ones through `chrome.dom.openOrClosedShadowRoot`.
+
+The research behind these choices is in [docs/research.md](docs/research.md), and the build plan in [docs/plan.md](docs/plan.md).
 
 ```
 extension/   the folder you load: manifest, content script, lib/, popup, icons, fonts
-test/        Vitest unit tests, fixture.html, e2e.mjs
-scripts/     icon rendering
-docs/        research, browser comparison, build plan
+test/        unit tests, fixture page, end-to-end run
+scripts/     icon and screenshot rendering
+docs/        research, browser comparison, build plan, images
 ```
 
 ## Development
 
 ```sh
 npm install
-npm test            # Vitest + jsdom: text rules, walker, observer, settings
-npm run test:e2e    # Playwright's Chromium with the extension loaded: fixture page and popup
-npm run icons       # re-render extension/icons/*.png from icon.svg
+npm test               # Vitest + jsdom: text rules, walker, observer, settings
+npm run test:e2e       # loads the extension into Playwright's Chromium and runs the fixture and popup
+npm run icons          # re-render the PNG icons from extension/icons/icon.svg
+npm run screenshots    # re-render the README images with the real extension
 ```
 
-The extension itself needs no `npm install`. `node_modules` is only for tests.
+The extension needs no `npm install` to run. `node_modules` is only for tests. Branded Chrome ignores the `--load-extension` flag, so the end-to-end run uses Playwright's bundled Chromium.
 
-For a manual check, load the extension, enable file URL access, open `test/fixture.html`, and wait three seconds: the page reports how many of its checks pass.
+For a manual check, load the extension, turn on **Allow access to file URLs**, open `test/fixture.html`, and wait three seconds. The page reports how many of its checks pass.
 
-## Docs
+## Contributing
 
-- [docs/plan.md](docs/plan.md): build plan, status, testing approach, risks, open questions.
-- [docs/research.md](docs/research.md): how Chrome extensions work and how to rewrite page text safely.
-- [docs/chromium-browsers.md](docs/chromium-browsers.md): Chrome, Arc, Dia, Helium, Brave, Edge, Opera, Vivaldi and other forks compared for an unpacked MV3 extension.
+Found a page where it gets something wrong, or rewrites text it shouldn't? [Open an issue](https://github.com/alesmartan/em-deslop/issues) with the URL and what you expected. Pull requests welcome. Please run `npm test` and `npm run test:e2e` first.
 
-## Credits
+## License
 
-The popup uses Bricolage Grotesque and Hanken Grotesk, both under the SIL Open Font License, bundled in `extension/fonts/`.
+[MIT](LICENSE). The popup bundles Bricolage Grotesque and Hanken Grotesk, both under the [SIL Open Font License](extension/fonts).

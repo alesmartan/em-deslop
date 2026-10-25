@@ -47,7 +47,7 @@ These come from Chromium, so every fork inherits them unless it patches them out
 3. Click Load unpacked, pick the folder that contains `manifest.json`.
 4. Pin the icon so the popup is one click away.
 
-The folder must stay where it is. The browser reads files from that path on every start. Moving or deleting it breaks the extension. On the Mac mini, `~/Code` is on an external SSD. If that volume isn't mounted when the browser starts, the extension will fail to load until it is.
+The folder must stay where it is. The browser reads files from that path on every start. Moving or deleting it breaks the extension. If the folder is on an external drive that isn't mounted when the browser starts, the extension fails to load until you mount it and click reload.
 
 ### 2.2 Developer mode must stay on
 
@@ -102,7 +102,7 @@ This is a change from [research.md](research.md) section 1.2, which recommended 
 | Browser | Risk | Severity | What to do |
 |---|---|---|---|
 | All | Developer mode turned off by accident or by a policy | Extension silently disabled | Leave it on. Check the extensions page when dashes reappear. |
-| All | Project folder moved, renamed, or on an unmounted volume | Extension fails to load at startup | Load from a stable path. On the mini, make sure the SSD mounts before the browser launches. |
+| All | Project folder moved, renamed, or on an unmounted volume | Extension fails to load at startup | Load from a stable path on an internal disk. |
 | All | `minimum_chrome_version` higher than the fork's base | Extension won't install | Keep the minimum low, use `chrome.*`. |
 | All | Private windows | Dashes visible there | Enable "Allow in Incognito/Private" if wanted. |
 | Opera | Search result pages blocked by default | Dashes remain on Google/Bing results | Tick "Allow access to search page results". |

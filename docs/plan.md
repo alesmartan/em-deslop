@@ -250,7 +250,7 @@ Only the browsers Ales uses day to day are required. The rest are nice to have.
 | Code-like text outside `<code>` gets changed (docs sites using `<div>` for code) | Medium | Medium | Add site-specific skip selectors as found. `data-emdash-keep` for own pages. |
 | Shadow roots attached after processing are missed | Medium | Low | Re-scan subtrees on `childList` changes. The `attachShadow` patch stays out of v1. |
 | Developer mode switched off, extension silently disabled | Medium | Medium | Documented in README. Note it in the popup's help text. |
-| Folder on the mini's external SSD isn't mounted at browser start | Low | Medium | Documented. Reload from the extensions page after mounting. |
+| Extension folder on an external drive that isn't mounted at browser start | Low | Medium | Documented. Reload from the extensions page after mounting. |
 | Copying text from a page copies the replaced version | Certain | Low | Accepted trade-off. Disable on that site when exact text matters. |
 | Broad install warning ("read and change all your data") | Certain | Low | Honest for this design. Model B (per-site opt-in) is the path if publishing. |
 | A fork lags Chromium or drops an API | Low | Medium | `chrome.*` only, minimum Chromium 119. |

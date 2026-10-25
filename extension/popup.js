@@ -96,7 +96,9 @@
   Promise.all([readTab(), Settings.load()]).then(([, settings]) => {
     current = settings;
     render();
-    requestAnimationFrame(() => document.body.classList.add('ready'));
+    // Force a style pass with the initial state, then allow transitions.
+    void document.body.offsetHeight;
+    document.body.classList.add('ready');
   });
 
   // Another window's popup, or sync from another machine.
