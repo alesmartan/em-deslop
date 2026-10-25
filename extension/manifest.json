@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Em Dash Hider",
+  "name": "Em Deslop",
   "version": "0.1.0",
   "description": "Replaces em dashes in the text of web pages.",
   "minimum_chrome_version": "119",
@@ -11,7 +11,7 @@
     "128": "icons/128.png"
   },
   "action": {
-    "default_title": "Em Dash Hider",
+    "default_title": "Em Deslop",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/16.png",

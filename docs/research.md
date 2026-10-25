@@ -1,4 +1,4 @@
-# Em dash hider: research notes
+# Em Deslop: research notes
 
 Goal: a Chrome extension that removes or replaces em dashes (U+2014) in the text of pages you visit.
 
@@ -263,7 +263,7 @@ Manifest reference: https://developer.chrome.com/docs/extensions/reference/manif
 ```json
 {
   "manifest_version": 3,
-  "name": "Em Dash Hider",
+  "name": "Em Deslop",
   "version": "0.1.0",
   "description": "Removes em dashes from the text of web pages.",
   "minimum_chrome_version": "148",
@@ -404,7 +404,7 @@ Switch to WXT if it grows: options page with a UI framework, Firefox support, or
 ### 5.4 Proposed file list
 
 ```
-em-dash-hider/
+em-deslop/
   manifest.json
   content.js          entry: read settings, initial pass, start observers
   lib/

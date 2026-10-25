@@ -1,4 +1,4 @@
-# Build plan: em dash hider
+# Build plan: Em Deslop
 
 **Status, 2026-10-25: built.** Steps 1 to 6 and 9 are done, with the recommended defaults standing in for the open questions in section 6. Step 7 is done for Chromium only (automated, see `npm run test:e2e`). The other browsers in the matrix still need a manual pass, and step 8 (a week of daily use) hasn't started. See "What changed during the build" below.
 

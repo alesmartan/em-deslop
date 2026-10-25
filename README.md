@@ -1,6 +1,6 @@
-# em-dash-hider
+# Em Deslop
 
-Chrome extension that replaces em dashes (U+2014) in the text of every page you visit. `word\u2014word` becomes `word, word` by default. Code blocks, form fields and anything you can type into are left alone.
+The em dash (U+2014) is the most obvious tell of AI writing. Em Deslop is a Chrome extension that takes it out of every page you read. `word\u2014word` becomes `word, word` by default. Code blocks, form fields and anything you can type into are left alone.
 
 Manifest V3, plain JavaScript, no build step. Works in any current Chromium browser: Chrome, Arc, Dia, Helium, Brave, Edge, Opera, Vivaldi.
 

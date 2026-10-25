@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fixture — em dash hider</title>
+  <title>Fixture — Em Deslop</title>
   <style>
     :root { --ink: #171716; --paper: #e6e5e1; --muted: rgba(23, 23, 22, 0.58); --line: rgba(23, 23, 22, 0.22); }
     * { box-sizing: border-box; }
@@ -27,7 +27,7 @@
 </head>
 <body>
 <main>
-  <h1>Em dash hider fixture</h1>
+  <h1>Em Deslop fixture</h1>
   <p class="muted">Load the extension, open this page, wait three seconds. Every line with a <code>data-expect</code> attribute is checked against its expected text. Over <code>file://</code>, turn on "Allow access to file URLs" for the extension first.</p>
   <p id="summary" data-emdash-keep>Checking in 3 seconds</p>
   <ol id="results" data-emdash-keep></ol>
@@ -95,7 +95,7 @@
   const expect = (name, get, expected) => checks.push({ name, get, expected });
 
   // Title.
-  expect('title', () => document.title, 'Fixture, em dash hider');
+  expect('title', () => document.title, 'Fixture, Em Deslop');
 
   // Form values must never change.
   expect('textarea value', () => document.getElementById('textarea').value, `textarea: a${D}b`);
