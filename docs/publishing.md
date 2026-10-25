@@ -5,7 +5,7 @@ Researched 2026-10-25. How to get Em Deslop onto the Chrome Web Store, what it c
 Short version:
 
 - **One store covers almost everyone.** Chrome, Arc, Dia, Helium, Brave, Vivaldi and Opera all install from the Chrome Web Store. Edge users can too, but Edge has its own free store worth a second listing.
-- **Cost:** a one-time registration fee (historically US$5, the dashboard shows the current amount), a Google account with 2-Step Verification, and a few hours of work on images and copy.
+- **Cost:** US$5, once, for the whole account (not per extension, no renewal). Plus a Google account with 2-Step Verification and a few hours of work on images and copy. Edge Add-ons is free.
 - **Review:** "within a few days" for most extensions, "up to a few weeks" for some. Em Deslop runs on all sites, which Google lists as a reason for a longer, more careful review. Expect the slow end for the first submission.
 - **Biggest risks:** the broad host permission and the privacy disclosures. Both are fine if the justifications are specific and the privacy policy matches what the code does.
 - **To do in the repo first:** a store-sized icon with padding, 1280x800 screenshots, a 440x280 promo tile, a privacy policy page, a better manifest description, and a zip script. Details in section 6.
@@ -17,7 +17,7 @@ Short version:
 | Requirement | Detail |
 |---|---|
 | Google account | Use one you'll keep. The account email can't be changed after registration. A dedicated address is Google's advice. |
-| Registration fee | One-time. Google's docs don't print the amount. It has been US$5 since 2011, confirmed again in Google's 2020 dashboard announcement. |
+| Registration fee | US$5, paid once by card. Covers every extension on the account, no yearly renewal. Google's registration page doesn't print the amount, but Google's 2020 dashboard announcement states $5.00, and 2026 publishing guides agree. The dashboard shows the exact amount before you pay. |
 | 2-Step Verification | Required before you can publish or update anything. |
 | Contact email | Must be verified in the dashboard's Account page. Notifications go there. |
 | Publisher name | Shown as "Offered by" on the listing. |
@@ -27,7 +27,7 @@ Short version:
 
 Optional: verify a domain (for example `alesm.dev`) so the listing shows an official publisher URL.
 
-Sources: [Register](https://developer.chrome.com/docs/webstore/register), [Set up your account](https://developer.chrome.com/docs/webstore/set-up-account), [2-Step Verification](https://developer.chrome.com/docs/webstore/program-policies/two-step-verification), [Trader disclosure](https://developer.chrome.com/docs/webstore/program-policies/trader-disclosure), [Trader FAQ](https://developer.chrome.com/docs/webstore/program-policies/trader-verification-faq), [2020 fee announcement](https://blog.chromium.org/2020/03/new-developer-dashboard-and.html).
+Sources: [Register](https://developer.chrome.com/docs/webstore/register), [Set up your account](https://developer.chrome.com/docs/webstore/set-up-account), [2-Step Verification](https://developer.chrome.com/docs/webstore/program-policies/two-step-verification), [Trader disclosure](https://developer.chrome.com/docs/webstore/program-policies/trader-disclosure), [Trader FAQ](https://developer.chrome.com/docs/webstore/program-policies/trader-verification-faq), [2020 fee announcement](https://blog.chromium.org/2020/03/new-developer-dashboard-and.html), and for the fee in 2026: [Extension Radar](https://www.extensionradar.com/blog/chrome-web-store-developer-fee-2026), [pearpages](https://pearpages.com/blog/2026/07/19/publishing-chrome-extensions-what-it-takes-what-it-costs), [ExtensionLaunch](https://extensionlaunch.com/blog/chrome-web-store-developer-account).
 
 ## 2. The submission
 
@@ -174,7 +174,7 @@ Sources: [Publish to Edge Add-ons](https://learn.microsoft.com/en-us/microsoft-e
 ## 8. Order of work
 
 1. Turn on 2-Step Verification on the Google account you'll publish with.
-2. Register in the Developer Dashboard, pay the fee, verify the contact email, declare trader status.
+2. Register in the Developer Dashboard, pay the US$5 fee, verify the contact email, declare trader status.
 3. Make the repo changes in section 6, bump the version to 1.0.0, build the zip.
 4. Upload, fill in the tabs with the section 5 copy, set visibility to **Unlisted** for a soft launch or **Public** straight away.
 5. Submit with automatic publishing off, so you choose the launch moment.
