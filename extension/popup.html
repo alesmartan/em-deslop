@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Em Dash Hider</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <h1>Em Dash Hider</h1>
+    <p class="status" id="status">Loading</p>
+
+    <div class="rows">
+      <label class="row toggle">
+        <span class="label">Everywhere</span>
+        <input type="checkbox" role="switch" id="enabled">
+      </label>
+      <label class="row toggle" id="site-row">
+        <span class="label" id="site-label">This site</span>
+        <input type="checkbox" role="switch" id="site">
+      </label>
+      <fieldset class="row styles">
+        <legend class="microlabel">Replace with</legend>
+        <label class="option"><input type="radio" name="style" value="comma"><span class="name">Comma</span><span class="preview" data-style="comma"></span></label>
+        <label class="option"><input type="radio" name="style" value="hyphen"><span class="name">Hyphen</span><span class="preview" data-style="hyphen"></span></label>
+        <label class="option"><input type="radio" name="style" value="endash"><span class="name">En dash</span><span class="preview" data-style="endash"></span></label>
+        <label class="option"><input type="radio" name="style" value="remove"><span class="name">Nothing</span><span class="preview" data-style="remove"></span></label>
+      </fieldset>
+    </div>
+
+    <p class="note" id="note">Changes reload this tab.</p>
+  </main>
+  <script src="lib/replace.js"></script>
+  <script src="lib/settings.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Build plan: em dash hider
 
-**This plan is the deliverable. The extension is not scaffolded yet.** There is no `manifest.json`, no JavaScript and no `package.json` in the repo. Building starts at step 1 below, after Ales answers the open questions in section 6.
+**Status, 2026-10-25: built.** Steps 1 to 6 and 9 are done, with the recommended defaults standing in for the open questions in section 6. Step 7 is done for Chromium only (automated, see `npm run test:e2e`). The other browsers in the matrix still need a manual pass, and step 8 (a week of daily use) hasn't started. See "What changed during the build" below.
 
 Inputs: [research.md](research.md) (how extensions work, the text-rewriting approach) and [chromium-browsers.md](chromium-browsers.md) (what differs across Chrome, Arc, Dia, Helium, Brave, Edge, Opera, Vivaldi).
 
@@ -43,17 +43,32 @@ Taken from [research.md](research.md) unless noted. Each one is a default, and s
 | Tests | Vitest + jsdom for unit and DOM tests. Manual fixture page. Playwright later, optional. | jsdom implements `TreeWalker` and `MutationObserver`. (research 5.3) |
 | Settings shape | `storage.sync`: `{ enabled: true, style: "comma", disabledHosts: [] }` | Fits the 8 KB per item quota easily. (research 3.5) |
 
-Target file layout, from research 5.4:
+File layout as built. The extension lives in `extension/`, so the folder you load doesn't contain `node_modules` or tests:
 
 ```
-manifest.json
-content.js
-lib/replace.js  lib/walk.js  lib/observe.js  lib/settings.js
-popup.html  popup.js  popup.css
-icons/16.png 48.png 128.png
-test/replace.test.js  test/walk.test.js  test/observe.test.js  test/fixture.html
+extension/
+  manifest.json  content.js
+  lib/replace.js  lib/walk.js  lib/observe.js  lib/settings.js
+  popup.html  popup.js  popup.css
+  icons/icon.svg  icons/16.png 32.png 48.png 128.png
+  fonts/          Bricolage Grotesque and Hanken Grotesk for the popup (OFL)
+test/
+  setup.js  replace.test.js  walk.test.js  observe.test.js  settings.test.js
+  fixture.html    manual and automated check page
+  e2e.mjs         Playwright run against real Chromium
+scripts/icons.mjs renders icon.svg to PNGs
 package.json  vitest.config.js   (dev only)
 ```
+
+### What changed during the build
+
+- **`extension/` subfolder.** research.md put everything at the root. Loading the repo root would have pulled `node_modules` into the extension, and Chrome rejects top-level names starting with `_`.
+- **No `module.exports` guard.** The `lib/` files attach to `globalThis.EmDash` inside an IIFE. Vitest imports them for that side effect, so the guard from research 5.4 wasn't needed.
+- **Context across inline tags.** A dash at the edge of a text node (`<b>word</b>\u2014word`) looks at the neighbouring inline text to decide between "comma" and "drop". Block elements and `<br>` count as boundaries.
+- **Late shadow roots.** Custom elements with no shadow root are rechecked up to 5 times, once a second, while the page is changing. Fixture case: a shadow root attached 300 ms after load.
+- **Iframes on a disabled site.** Each frame checks its own host and the top-level page's host (`location.ancestorOrigins`), so disabling a site covers its embeds too.
+- **Settings arrive late.** The observer starts at `document_start` and queues records until settings load, then processes them or throws them away.
+- **Live on, reload off.** Turning the extension on applies live in every tab. Turning it off or changing the style reloads the current tab, because rewritten text can't be put back yet.
 
 ---
 

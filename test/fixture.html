@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fixture — em dash hider</title>
+  <style>
+    :root { --ink: #171716; --paper: #e6e5e1; --muted: rgba(23, 23, 22, 0.58); --line: rgba(23, 23, 22, 0.22); }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 system-ui, sans-serif; }
+    main { max-width: 52rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+    h1 { font-size: 2.6rem; line-height: 1; letter-spacing: -0.03em; margin: 0 0 1rem; }
+    h2 { font-size: 1.1rem; margin: 2.5rem 0 0.75rem; }
+    section { border-top: 1px solid var(--line); }
+    .muted { color: var(--muted); }
+    [data-expect] { margin: 0.4rem 0; }
+    pre, code, kbd, textarea, input { font: 0.9rem/1.5 ui-monospace, monospace; }
+    pre { margin: 0.4rem 0; }
+    textarea, input { width: 100%; padding: 0.4rem; border: 1px solid var(--line); background: transparent; }
+    [contenteditable] { border: 1px solid var(--line); padding: 0.4rem; }
+    iframe { width: 100%; height: 4rem; border: 1px solid var(--line); }
+    button { cursor: pointer; font: inherit; padding: 0.4rem 1rem; border-radius: 9999px; border: 0; background: var(--ink); color: var(--paper); }
+    #summary { font-weight: 600; }
+    #results { font-size: 0.85rem; }
+    #results .fail { font-weight: 700; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Em dash hider fixture</h1>
+  <p class="muted">Load the extension, open this page, wait three seconds. Every line with a <code>data-expect</code> attribute is checked against its expected text. Over <code>file://</code>, turn on "Allow access to file URLs" for the extension first.</p>
+  <p id="summary" data-emdash-keep>Checking in 3 seconds</p>
+  <ol id="results" data-emdash-keep></ol>
+
+  <section>
+    <h2>Replaced</h2>
+    <p data-expect="Spaced: one, two">Spaced: one — two</p>
+    <p data-expect="Unspaced: one, two">Unspaced: one—two</p>
+    <p data-expect="Several: a, b, c">Several: a—b—c</p>
+    <p data-expect="Double: a, b">Double: a——b</p>
+    <p data-expect="Years 1990-2000">Years 1990—2000</p>
+    <p data-expect="Wait? Wait. (aside)">Wait—? Wait—. (aside—)</p>
+    <p data-expect="&quot;Hello&quot;, she said">"Hello"—she said</p>
+    <blockquote data-expect="Author Name">— Author Name</blockquote>
+    <p data-expect="Bold, word"><b>Bold</b>—word</p>
+    <p data-expect="Link, then text"><a href="#">Link</a> — then text</p>
+    <p data-expect="Alone: a, b">Alone: <span>a</span><span>—</span><span>b</span></p>
+    <p data-expect="NBSP: one, two">NBSP: one&nbsp;—&nbsp;two</p>
+    <p data-expect="Кириллица: слово, слово">Кириллица: слово—слово</p>
+    <p data-expect="Trailing">Trailing—</p>
+    <p data-expect="A contenteditable=false island, replaced" contenteditable="false">A contenteditable=false island—replaced</p>
+  </section>
+
+  <section>
+    <h2>Kept</h2>
+    <pre data-expect="pre: a—b">pre: a—b</pre>
+    <p data-expect="inline code: a—b"><code>inline code: a—b</code></p>
+    <p data-expect="kbd: a—b"><kbd>kbd: a—b</kbd></p>
+    <textarea id="textarea" rows="2">textarea: a—b</textarea>
+    <input id="input" value="input: a—b">
+    <div contenteditable="true" data-expect="editable: a—b">editable: <span>a—b</span></div>
+    <div data-emdash-keep data-expect="opt-out: a—b">opt-out: a—b</div>
+    <div class="cm-editor"><div data-expect="cm-editor: a—b">cm-editor: a—b</div></div>
+  </section>
+
+  <section>
+    <h2>Shadow DOM</h2>
+    <x-open id="open-host"></x-open>
+    <x-closed id="closed-host"></x-closed>
+    <x-late id="late-host"></x-late>
+  </section>
+
+  <section>
+    <h2>Frames</h2>
+    <iframe id="srcdoc" srcdoc="<p id='f'>srcdoc: one—two</p>"></iframe>
+    <iframe id="blank"></iframe>
+  </section>
+
+  <section>
+    <h2>Dynamic</h2>
+    <p id="delayed-target" class="muted">A paragraph appears here after one second.</p>
+    <p id="changing" data-expect="Changed: after, update">Changed: before update</p>
+    <button type="button" id="add">Add a paragraph</button>
+  </section>
+
+  <section>
+    <h2>Bulk</h2>
+    <div id="bulk"></div>
+  </section>
+</main>
+
+<script>
+  const D = '—';
+  const checks = [];
+  const expect = (name, get, expected) => checks.push({ name, get, expected });
+
+  // Title.
+  expect('title', () => document.title, 'Fixture, em dash hider');
+
+  // Form values must never change.
+  expect('textarea value', () => document.getElementById('textarea').value, `textarea: a${D}b`);
+  expect('input value', () => document.getElementById('input').value, `input: a${D}b`);
+
+  // Open shadow root, attached before the extension runs its first pass.
+  const openRoot = document.getElementById('open-host').attachShadow({ mode: 'open' });
+  openRoot.innerHTML = `<p>open shadow: one${D}two</p><pre>shadow pre: a${D}b</pre>`;
+  expect('open shadow root', () => openRoot.querySelector('p').textContent, 'open shadow: one, two');
+  expect('pre in shadow root', () => openRoot.querySelector('pre').textContent, `shadow pre: a${D}b`);
+
+  // Closed shadow root: only reachable through chrome.dom.openOrClosedShadowRoot.
+  const closedRoot = document.getElementById('closed-host').attachShadow({ mode: 'closed' });
+  closedRoot.innerHTML = `<p>closed shadow: one${D}two</p>`;
+  expect('closed shadow root', () => closedRoot.querySelector('p').textContent, 'closed shadow: one, two');
+
+  // A custom element whose shadow root shows up later, with no DOM mutation
+  // in the light tree (like a component definition loading late).
+  let lateRoot;
+  setTimeout(() => {
+    lateRoot = document.getElementById('late-host').attachShadow({ mode: 'open' });
+    lateRoot.innerHTML = `<p>late shadow: one${D}two</p>`;
+  }, 300);
+  expect('late shadow root', () => lateRoot?.querySelector('p').textContent, 'late shadow: one, two');
+
+  // Frames.
+  const frameText = (id) => document.getElementById(id).contentDocument?.querySelector('p')?.textContent;
+  expect('srcdoc iframe', () => frameText('srcdoc'), 'srcdoc: one, two');
+  const blank = document.getElementById('blank').contentDocument;
+  blank.body.innerHTML = `<p>about:blank: one${D}two</p>`;
+  expect('about:blank iframe', () => frameText('blank'), 'about:blank: one, two');
+
+  // Content added later, and text edited in place.
+  setTimeout(() => {
+    const p = document.createElement('p');
+    p.id = 'delayed';
+    p.textContent = `Delayed: one${D}two`;
+    document.getElementById('delayed-target').after(p);
+  }, 1000);
+  expect('delayed paragraph', () => document.getElementById('delayed')?.textContent, 'Delayed: one, two');
+  setTimeout(() => {
+    document.getElementById('changing').firstChild.data = `Changed: after${D}update`;
+  }, 1200);
+
+  document.getElementById('add').addEventListener('click', () => {
+    const p = document.createElement('p');
+    p.textContent = `Added at ${new Date().toLocaleTimeString()}${D}by the button`;
+    document.getElementById('add').before(p);
+  });
+
+  // Bulk: 5,000 paragraphs, to eyeball the cost of the first pass.
+  const bulk = document.getElementById('bulk');
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < 5000; i++) {
+    const p = document.createElement('p');
+    p.textContent = `Row ${i}: plain text${i % 10 === 0 ? `${D}with a dash` : ''}`;
+    frag.append(p);
+  }
+  bulk.append(frag);
+  expect('bulk rows', () => bulk.textContent.includes(D) ? 'dash left' : 'clean', 'clean');
+
+  function run() {
+    for (const el of document.querySelectorAll('[data-expect]')) {
+      checks.push({ name: el.dataset.expect, get: () => el.textContent, expected: el.dataset.expect });
+    }
+    const results = checks.map((c) => {
+      let actual;
+      try { actual = c.get(); } catch (e) { actual = String(e); }
+      return { name: c.name, ok: actual === c.expected, actual, expected: c.expected };
+    });
+    const passed = results.filter((r) => r.ok).length;
+    document.getElementById('summary').textContent = `${passed} of ${results.length} checks pass`;
+    document.getElementById('results').replaceChildren(...results.filter((r) => !r.ok).map((r) => {
+      const li = document.createElement('li');
+      li.className = 'fail';
+      li.textContent = `${r.name}: got ${JSON.stringify(r.actual)}`;
+      return li;
+    }));
+    window.fixtureResults = results;
+  }
+  setTimeout(run, 3000);
+</script>
+</body>
+</html>
