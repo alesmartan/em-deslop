@@ -8,7 +8,7 @@ It works in Chrome and every current Chromium browser: Arc, Dia, Helium, Brave, 
 
 ## Install
 
-Em Deslop isn't on the Chrome Web Store yet. Installing from source takes a minute:
+Em Deslop isn't on the Chrome Web Store yet (the plan is in [docs/publishing.md](docs/publishing.md)). Installing from source takes a minute:
 
 1. Clone the repo, or download it as a ZIP and unzip it:
    ```sh
